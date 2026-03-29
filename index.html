@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Reality Distortion Engine</title>
+
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        font-family: 'Courier New', monospace;
+        background: black;
+        color: #00ffcc;
+        transition: background 5s linear;
+    }
+
+    #container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        letter-spacing: 2px;
+        transition: all 2s ease;
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 1rem;
+        background: transparent;
+        border: 1px solid #00ffcc;
+        color: #00ffcc;
+        cursor: pointer;
+        transition: all 0.5s ease;
+        position: relative;
+    }
+
+    button:hover {
+        background: #00ffcc;
+        color: black;
+    }
+
+    .glitch {
+        animation: glitch 0.3s infinite;
+    }
+
+    @keyframes glitch {
+        0% { transform: translate(0px); }
+        25% { transform: translate(1px, -1px); }
+        50% { transform: translate(-1px, 1px); }
+        75% { transform: translate(1px, 1px); }
+        100% { transform: translate(0px); }
+    }
+</style>
+</head>
+
+<body>
+
+<div id="container">
+    <h1 id="text">Everything is normal.</h1>
+    <button id="btn">Confirm</button>
+</div>
+
+<script>
+let text = document.getElementById("text");
+let btn = document.getElementById("btn");
+let body = document.body;
+
+let phrases = [
+    "Everything is normal.",
+    "Everything is almost normal.",
+    "Something feels off.",
+    "Did that move?",
+    "Are you still in control?",
+    "The system is adapting.",
+    "You were not supposed to notice.",
+    "Stop observing.",
+    "It sees you.",
+    "You are part of it now."
+];
+
+let glitchChars = "!@#$%^&*()_+=<>?/\\|{}[]";
+
+let distortionLevel = 0;
+
+// TEXT MUTATION
+function mutateText(str) {
+    return str.split("").map(char => {
+        if (Math.random() < distortionLevel * 0.05) {
+            return glitchChars[Math.floor(Math.random() * glitchChars.length)];
+        }
+        return char;
+    }).join("");
+}
+
+// BACKGROUND SHIFT
+function shiftBackground() {
+    let r = Math.floor(Math.random() * distortionLevel * 20);
+    let g = Math.floor(255 - distortionLevel * 20);
+    let b = Math.floor(Math.random() * distortionLevel * 20);
+
+    body.style.background = `rgb(${r},${g},${b})`;
+}
+
+// BUTTON DRIFT
+function moveButton() {
+    let x = (Math.random() - 0.5) * distortionLevel * 10;
+    let y = (Math.random() - 0.5) * distortionLevel * 10;
+    btn.style.transform = `translate(${x}px, ${y}px)`;
+}
+
+// MAIN DISTORTION LOOP
+setInterval(() => {
+    distortionLevel += 0.1;
+
+    let index = Math.min(Math.floor(distortionLevel), phrases.length - 1);
+    text.innerText = mutateText(phrases[index]);
+
+    shiftBackground();
+    moveButton();
+
+    if (distortionLevel > 3) {
+        text.classList.add("glitch");
+    }
+
+}, 1500);
+
+// MOUSE PARANOIA EFFECT
+document.addEventListener("mousemove", (e) => {
+    let x = e.clientX / window.innerWidth;
+    let y = e.clientY / window.innerHeight;
+
+    let shiftX = (x - 0.5) * distortionLevel * 20;
+    let shiftY = (y - 0.5) * distortionLevel * 20;
+
+    document.getElementById("container").style.transform =
+        `translate(calc(-50% + ${shiftX}px), calc(-50% + ${shiftY}px))`;
+});
+
+// BUTTON CLICK = ESCALATE
+btn.addEventListener("click", () => {
+    distortionLevel += 1;
+    text.innerText = "You accelerated it.";
+});
+</script>
+
+</body>
+</html>
